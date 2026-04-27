@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="BLL/BLL.csproj" Id="ba32ddd8-1a4a-48d7-8d06-139debf796be" />
+  <Project Path="DAl/DAL.csproj" Id="aa461379-164c-4691-b64e-3d6a3418a804" />
+  <Project Path="DTO/DTO.csproj" Id="9ff9d19b-a492-4b1d-8d80-3d9366ef7bec" />
+  <Project Path="GUI/GUI.csproj" />
+</Solution>
