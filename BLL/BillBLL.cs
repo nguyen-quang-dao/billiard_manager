@@ -10,37 +10,42 @@ namespace BLL
 {
     public class BillBLL
     {
-        BillDAL dal = new BillDAL();
-        TableDAL tableDAL = new TableDAL();
+        private BillDAL billDAL = new BillDAL();
+        private TableDAL tableDAL = new TableDAL();
 
-        double pricePerHour = 50000;
+        private const double PRICE_PER_HOUR = 50000;
 
         public BillDTO GetOpenBill(int tableId)
         {
-            return dal.GetOpenBill(tableId);
+            return billDAL.GetOpenBill(tableId);
         }
 
         public void StartTable(int tableId)
         {
-            dal.CreateBill(tableId);
+            var bill = billDAL.GetOpenBill(tableId);
+            if (bill != null) return;
+
+            billDAL.CreateBill(tableId);
             tableDAL.UpdateStatus(tableId, 1);
         }
 
-        public double CalculateTotal(DateTime start)
+        public double CalculateTotal(DateTime startTime)
         {
-            TimeSpan time = DateTime.Now - start;
-            return Math.Round(time.TotalHours * pricePerHour, 0);
+            TimeSpan time = DateTime.Now - startTime;
+            return Math.Round(time.TotalHours * PRICE_PER_HOUR, 0);
         }
 
-        public void Pay(int tableId)
+        public double Pay(int tableId)
         {
-            var bill = dal.GetOpenBill(tableId);
-            if (bill == null) return;
+            var bill = billDAL.GetOpenBill(tableId);
+            if (bill == null) return 0;
 
             double total = CalculateTotal(bill.StartTime);
 
-            dal.PayBill(bill.BillId, total);
+            billDAL.PayBill(bill.BillId, total);
             tableDAL.UpdateStatus(tableId, 0);
+
+            return total;
         }
     }
 }

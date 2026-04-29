@@ -1,15 +1,20 @@
-﻿using System;
+﻿using BLL;
+using DTO;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
-using BLL;
-using DTO;
-using System.Collections.Generic;
 
 namespace GUI
 {
     public partial class FrmDashboard : Form
     {
         TableBLL tableBLL = new TableBLL();
+        BillBLL billBLL = new BillBLL(); 
+
+        private Panel header;
+        private Panel sidebar;
+        private Panel mainPanel;
+        private FlowLayoutPanel tablePanel;
 
         public FrmDashboard()
         {
@@ -22,10 +27,6 @@ namespace GUI
         {
             LoadTables();
         }
-        private Panel header;
-        private Panel sidebar;
-        private Panel mainPanel;
-        private FlowLayoutPanel tablePanel;
 
         private void InitUI()
         {
@@ -34,51 +35,63 @@ namespace GUI
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.FromArgb(24, 24, 24);
 
-            // ===== SIDEBAR =====
-            sidebar = new Panel();
-            sidebar.Width = 200;
-            sidebar.Dock = DockStyle.Left;
-            sidebar.BackColor = Color.FromArgb(32, 32, 32);
+            // SIDEBAR
+            sidebar = new Panel
+            {
+                Width = 200,
+                Dock = DockStyle.Left,
+                BackColor = Color.FromArgb(32, 32, 32)
+            };
 
-            Label logo = new Label();
-            logo.Text = "🎱 Billiard";
-            logo.ForeColor = Color.White;
-            logo.Font = new Font("Segoe UI", 14, FontStyle.Bold);
-            logo.Dock = DockStyle.Top;
-            logo.Height = 60;
-            logo.TextAlign = ContentAlignment.MiddleCenter;
+            Label logo = new Label
+            {
+                Text = "🎱 Billiard",
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 14, FontStyle.Bold),
+                Dock = DockStyle.Top,
+                Height = 60,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
 
             sidebar.Controls.Add(logo);
 
-            // ===== HEADER =====
-            header = new Panel();
-            header.Height = 60;
-            header.Dock = DockStyle.Top;
-            header.BackColor = Color.FromArgb(40, 40, 40);
+            // HEADER
+            header = new Panel
+            {
+                Height = 60,
+                Dock = DockStyle.Top,
+                BackColor = Color.FromArgb(40, 40, 40)
+            };
 
-            Label title = new Label();
-            title.Text = "Dashboard";
-            title.ForeColor = Color.White;
-            title.Font = new Font("Segoe UI", 14, FontStyle.Bold);
-            title.Dock = DockStyle.Left;
-            title.Padding = new Padding(20, 15, 0, 0);
+            Label title = new Label
+            {
+                Text = "Dashboard",
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 14, FontStyle.Bold),
+                Dock = DockStyle.Left,
+                Padding = new Padding(20, 15, 0, 0)
+            };
 
             header.Controls.Add(title);
 
-            // ===== MAIN =====
-            mainPanel = new Panel();
-            mainPanel.Dock = DockStyle.Fill;
-            mainPanel.BackColor = Color.FromArgb(24, 24, 24);
+            // MAIN
+            mainPanel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(24, 24, 24)
+            };
 
-            tablePanel = new FlowLayoutPanel();
-            tablePanel.Dock = DockStyle.Fill;
-            tablePanel.Padding = new Padding(20);
-            tablePanel.AutoScroll = true;
-            tablePanel.WrapContents = true;
+            tablePanel = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                Padding = new Padding(20),
+                AutoScroll = true,
+                WrapContents = true
+            };
 
             mainPanel.Controls.Add(tablePanel);
 
-            // ===== ADD =====
+            // ADD
             this.Controls.Add(mainPanel);
             this.Controls.Add(header);
             this.Controls.Add(sidebar);
@@ -89,15 +102,22 @@ namespace GUI
             tablePanel.Controls.Clear();
 
             var tables = tableBLL.GetTables();
-            BillBLL billBLL = new BillBLL();
 
             foreach (var t in tables)
             {
                 var bill = billBLL.GetOpenBill(t.TableId);
 
-                Button btn = new Button();
-                btn.Width = 150;
-                btn.Height = 120;
+                Button btn = new Button
+                {
+                    Width = 150,
+                    Height = 120,
+                    Margin = new Padding(10),
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat
+                };
+
+                btn.FlatAppearance.BorderSize = 0;
 
                 if (bill == null)
                 {
@@ -107,6 +127,7 @@ namespace GUI
                 else
                 {
                     btn.BackColor = Color.Red;
+
                     System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
                     timer.Interval = 1000;
 
@@ -120,7 +141,6 @@ namespace GUI
 
                     timer.Start();
                 }
-
                 btn.Click += (s, e) =>
                 {
                     var currentBill = billBLL.GetOpenBill(t.TableId);
@@ -131,56 +151,15 @@ namespace GUI
                     }
                     else
                     {
-                        billBLL.Pay(t.TableId);
+                        FrmPayment f = new FrmPayment(t.TableId);
+                        f.ShowDialog();
                     }
 
                     LoadTables();
                 };
+
                 tablePanel.Controls.Add(btn);
             }
-        }
-        private Button CreateTableButton(TableDTO t)
-        {
-            Button btn = new Button();
-
-            btn.Width = 150;
-            btn.Height = 100;
-            btn.Margin = new Padding(15);
-
-            btn.FlatStyle = FlatStyle.Flat;
-            btn.FlatAppearance.BorderSize = 0;
-
-            btn.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            btn.ForeColor = Color.White;
-
-            string statusText = t.Status == 0 ? "Trống" : "Đang chơi";
-
-            btn.Text = $"🎱 {t.TableName}\n{statusText}";
-
-            Color idle = Color.FromArgb(0, 150, 100);
-            Color busy = Color.FromArgb(200, 60, 60);
-
-            btn.BackColor = t.Status == 0 ? idle : busy;
-
-            // hover effect
-            btn.MouseEnter += (s, e) =>
-            {
-                btn.BackColor = t.Status == 0
-                    ? Color.FromArgb(0, 180, 120)
-                    : Color.FromArgb(230, 80, 80);
-            };
-
-            btn.MouseLeave += (s, e) =>
-            {
-                btn.BackColor = t.Status == 0 ? idle : busy;
-            };
-
-            btn.Click += (s, e) =>
-            {
-                MessageBox.Show($"Bạn chọn {t.TableName}");
-            };
-
-            return btn;
         }
     }
 }

@@ -14,9 +14,10 @@ namespace BLL
 
         public bool Login(string user, string pass)
         {
-            if (user == "" || pass == "")
+            if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(pass))
+            {
                 return false;
-
+            }
             return dal.CheckLogin(user, pass);
         }
     }

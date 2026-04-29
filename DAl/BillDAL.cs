@@ -17,12 +17,12 @@ namespace DAL
                 con.Open();
 
                 string sql = @"SELECT TOP 1 *
-                                FROM Bills
-                                WHERE TableId = @tableId AND EndTime IS NULL
-                                ORDER BY StartTime DESC";
+                               FROM Bills
+                               WHERE TableId = @id AND EndTime IS NULL
+                               ORDER BY StartTime DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, con);
-                cmd.Parameters.AddWithValue("@tableId", tableId);
+                cmd.Parameters.AddWithValue("@id", tableId);
 
                 SqlDataReader rd = cmd.ExecuteReader();
 
@@ -33,11 +33,12 @@ namespace DAL
                         BillId = (int)rd["BillId"],
                         TableId = (int)rd["TableId"],
                         StartTime = (DateTime)rd["StartTime"],
+                        EndTime = rd["EndTime"] == DBNull.Value ? null : (DateTime?)rd["EndTime"],
+                        TotalAmount = rd["TotalAmount"] == DBNull.Value ? 0 : Convert.ToDouble(rd["TotalAmount"]),
                         Status = (int)rd["Status"]
                     };
                 }
             }
-
             return null;
         }
 
@@ -48,14 +49,14 @@ namespace DAL
                 con.Open();
 
                 string sql = @"INSERT INTO Bills(TableId, StartTime, EndTime, Status)
-               VALUES(@tableId, GETDATE(), NULL, 0)";
-                SqlCommand cmd = new SqlCommand(sql, con);
+                               VALUES(@tableId, GETDATE(), NULL, 0)";
 
+                SqlCommand cmd = new SqlCommand(sql, con);
                 cmd.Parameters.AddWithValue("@tableId", tableId);
+
                 cmd.ExecuteNonQuery();
             }
         }
-
         public void PayBill(int billId, double total)
         {
             using (SqlConnection con = DBConnect.GetConnection())
@@ -63,11 +64,14 @@ namespace DAL
                 con.Open();
 
                 string sql = @"UPDATE Bills
-               SET EndTime = GETDATE(), Status = 1, TotalAmount = @total
-               WHERE BillId = @billId";
+                               SET EndTime = GETDATE(),
+                                   TotalAmount = @total,
+                                   Status = 1
+                               WHERE BillId = @billId";
+
                 SqlCommand cmd = new SqlCommand(sql, con);
-                cmd.Parameters.AddWithValue("@total", total);
                 cmd.Parameters.AddWithValue("@billId", billId);
+                cmd.Parameters.AddWithValue("@total", total);
 
                 cmd.ExecuteNonQuery();
             }

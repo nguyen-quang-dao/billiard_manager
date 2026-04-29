@@ -73,9 +73,9 @@ namespace GUI
                 {
                     MessageBox.Show("Đăng nhập thành công");
 
-                    this.Hide();                 // Ẩn form login
+                    this.Hide();                 
                     FrmDashboard f = new FrmDashboard();
-                    f.Show();                    // Mở dashboard
+                    f.Show();                    
                 }
                 else
                 {
