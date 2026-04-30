@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuditLogDAL.cs" />
     <Compile Include="BillDAL.cs" />
     <Compile Include="BilliardManagementDataSet.Designer.cs">
       <AutoGen>True</AutoGen>

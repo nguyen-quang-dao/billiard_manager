@@ -44,9 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuditLogDTO.cs" />
     <Compile Include="BillDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TableDTO.cs" />
+    <Compile Include="UserDTO.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -9,15 +9,17 @@ namespace GUI
     public partial class FrmPayment : Form
     {
         private int tableId;
+        private UserDTO currentUser;
         private BillBLL billBLL = new BillBLL();
         private BillDTO bill;
         private System.Windows.Forms.Timer timer; 
         private Label lblTable, lblStart, lblTime, lblTotal;
         private Button btnPay;
 
-        public FrmPayment(int tableId)
+        public FrmPayment(int tableId, UserDTO user)
         {
             this.tableId = tableId;
+            this.currentUser = user;
             InitUI();
             LoadData();
         }
@@ -25,31 +27,63 @@ namespace GUI
         private void InitUI()
         {
             this.Text = "Thanh toán";
-            this.Size = new Size(350, 280);
+            this.Size = new Size(400, 320);
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.BackColor = Color.FromArgb(30, 30, 30);
+            this.BackColor = Color.FromArgb(24, 24, 24);
 
-            lblTable = CreateLabel(20);
-            lblStart = CreateLabel(60);
-            lblTime = CreateLabel(100);
+            // ===== CARD =====
+            Panel card = new Panel();
+            card.Size = new Size(340, 240);
+            card.BackColor = Color.FromArgb(32, 32, 32);
+            card.Location = new Point(25, 25);
+            card.Padding = new Padding(10);
+            this.Controls.Add(card);
+
+            // ===== TITLE =====
+            Label title = new Label();
+            title.Text = "THANH TOÁN";
+            title.ForeColor = Color.White;
+            title.Font = new Font("Segoe UI", 13, FontStyle.Bold);
+            title.AutoSize = true;
+            title.Location = new Point(110, 10);
+            card.Controls.Add(title);
+
+            // ===== LABEL =====
+            lblTable = CreateLabel(50);
+            lblStart = CreateLabel(80);
+            lblTime = CreateLabel(110);
             lblTotal = CreateLabel(140);
 
+            lblTotal.ForeColor = Color.FromArgb(0, 200, 150);
+            lblTotal.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+
+            card.Controls.Add(lblTable);
+            card.Controls.Add(lblStart);
+            card.Controls.Add(lblTime);
+            card.Controls.Add(lblTotal);
+
+            // ===== BUTTON =====
             btnPay = new Button
             {
                 Text = "THANH TOÁN",
-                BackColor = Color.Red,
+                BackColor = Color.FromArgb(200, 60, 60),
                 ForeColor = Color.White,
-                Width = 250,
+                Width = 260,
                 Height = 40,
-                Location = new Point(50, 190),
-                Font = new Font("Segoe UI", 10, FontStyle.Bold)
+                Location = new Point(40, 180),
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                FlatStyle = FlatStyle.Flat
             };
+
+            btnPay.MouseEnter += (s, e) =>
+                btnPay.BackColor = Color.FromArgb(230, 80, 80);
+
+            btnPay.MouseLeave += (s, e) =>
+                btnPay.BackColor = Color.FromArgb(200, 60, 60);
 
             btnPay.Click += BtnPay_Click;
 
-            this.Controls.AddRange(new Control[] {
-                lblTable, lblStart, lblTime, lblTotal, btnPay
-            });
+            card.Controls.Add(btnPay);
         }
 
         private Label CreateLabel(int top)
@@ -104,7 +138,7 @@ namespace GUI
 
         private void BtnPay_Click(object sender, EventArgs e)
         {
-            billBLL.Pay(tableId);
+            billBLL.Pay(tableId, currentUser);
             timer?.Stop();
 
             MessageBox.Show("Thanh toán thành công!");

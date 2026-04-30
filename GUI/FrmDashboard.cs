@@ -9,16 +9,18 @@ namespace GUI
     public partial class FrmDashboard : Form
     {
         TableBLL tableBLL = new TableBLL();
-        BillBLL billBLL = new BillBLL(); 
-
+        BillBLL billBLL = new BillBLL();
+        private UserDTO currentUser;
+        private Button btnAdmin;
         private Panel header;
         private Panel sidebar;
         private Panel mainPanel;
         private FlowLayoutPanel tablePanel;
 
-        public FrmDashboard()
+        public FrmDashboard(UserDTO user)
         {
             InitializeComponent();
+            currentUser = user;
             InitUI();
             this.Load += FrmDashboard_Load;
         }
@@ -54,6 +56,21 @@ namespace GUI
             };
 
             sidebar.Controls.Add(logo);
+
+            btnAdmin = new Button();
+            btnAdmin.Text = "Quản lý giá";
+            btnAdmin.Width = 160;
+            btnAdmin.Height = 40;
+            btnAdmin.Top = 100;
+            btnAdmin.Left = 20;
+            btnAdmin.BackColor = Color.Gray;
+            btnAdmin.ForeColor = Color.White;
+
+            sidebar.Controls.Add(btnAdmin);
+            if (currentUser.Role == 0)
+            {
+                btnAdmin.Visible = false;
+            }
 
             // HEADER
             header = new Panel
@@ -151,13 +168,18 @@ namespace GUI
                     }
                     else
                     {
-                        FrmPayment f = new FrmPayment(t.TableId);
+                        FrmPayment f = new FrmPayment(t.TableId, currentUser);
                         f.ShowDialog();
                     }
 
                     LoadTables();
                 };
-
+                btnAdmin.Click += (s, e) =>
+                {
+                    FrmTableManager f = new FrmTableManager(currentUser);
+                    f.ShowDialog();
+                    LoadTables();
+                };
                 tablePanel.Controls.Add(btn);
             }
         }

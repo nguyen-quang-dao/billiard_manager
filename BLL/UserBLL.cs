@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using DAL;
+using DTO;
 
 namespace BLL
 {
@@ -12,13 +13,12 @@ namespace BLL
     {
         UserDAL dal = new UserDAL();
 
-        public bool Login(string user, string pass)
+        public UserDTO Login(string username, string password)
         {
-            if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(pass))
-            {
-                return false;
-            }
-            return dal.CheckLogin(user, pass);
+            return dal.Login(username, password);
+        }public bool IsAdmin(UserDTO user)
+        {
+            return user.Role == 1;
         }
     }
 }

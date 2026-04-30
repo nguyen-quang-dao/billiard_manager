@@ -12,6 +12,7 @@ namespace BLL
     {
         private BillDAL billDAL = new BillDAL();
         private TableDAL tableDAL = new TableDAL();
+        private AuditLogDAL logDAL = new AuditLogDAL();
 
         private const double PRICE_PER_HOUR = 50000;
 
@@ -35,17 +36,17 @@ namespace BLL
             return Math.Round(time.TotalHours * PRICE_PER_HOUR, 0);
         }
 
-        public double Pay(int tableId)
+        public void Pay(int tableId, UserDTO user)
         {
             var bill = billDAL.GetOpenBill(tableId);
-            if (bill == null) return 0;
+            if (bill == null) return;
 
             double total = CalculateTotal(bill.StartTime);
 
             billDAL.PayBill(bill.BillId, total);
             tableDAL.UpdateStatus(tableId, 0);
 
-            return total;
+            logDAL.Insert(user.UserId, "PAY", $"Thanh toán bàn {tableId} - {total}");
         }
     }
 }

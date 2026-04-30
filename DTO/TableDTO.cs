@@ -10,6 +10,7 @@ namespace DTO
     {
         public int TableId { get; set; }
         public string TableName { get; set; }
+        public double PricePerHour { get; set; }
         public int Status { get; set; }
     }
 }

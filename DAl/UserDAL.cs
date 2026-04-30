@@ -1,29 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.SqlClient;
+using DTO;
 
 namespace DAL
 {
     public class UserDAL
     {
-        public bool CheckLogin(string user, string pass)
+        public UserDTO Login(string username, string password)
         {
-            SqlConnection con = DBConnect.GetConnection();
-            con.Open();
+            using (SqlConnection con = DBConnect.GetConnection())
+            {
+                con.Open();
 
-            string sql = "SELECT COUNT(*) FROM Users WHERE Username=@u AND Password=@p";
-            SqlCommand cmd = new SqlCommand(sql, con);
+                string sql = "SELECT * FROM Users WHERE Username=@u AND Password=@p";
 
-            cmd.Parameters.AddWithValue("@u", user);
-            cmd.Parameters.AddWithValue("@p", pass);
+                SqlCommand cmd = new SqlCommand(sql, con);
+                cmd.Parameters.AddWithValue("@u", username);
+                cmd.Parameters.AddWithValue("@p", password);
 
-            int result = (int)cmd.ExecuteScalar();
-            con.Close();
+                SqlDataReader rd = cmd.ExecuteReader();
 
-            return result > 0;
+                if (rd.Read())
+                {
+                    return new UserDTO
+                    {
+                        UserId = (int)rd["UserId"],
+                        Username = rd["Username"].ToString(),
+                        FullName = rd["FullName"].ToString(),
+                        Role = (int)rd["Role"]
+                    };
+                }
+            }
+            return null;
         }
     }
 }
