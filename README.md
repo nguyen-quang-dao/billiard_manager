@@ -34,10 +34,10 @@ A desktop application for managing a billiard club, built with **C# WinForms** a
 
 ## 📸 Screenshots
 
-![Login](C:\Users\Dao\Pictures\Screenshots\Login.png)
-![Dashboard](C:\Users\Dao\Pictures\Screenshots\Dashboard.png)
-![Table Manager](C:\Users\Dao\Pictures\Screenshots\Table Manager.png)
-![Payment](C:\Users\Dao\Pictures\Screenshots\Payment.png)
+![Login](Login.png)
+![Dashboard](Dashboard.png)
+![Table Manager](Table_Manager.png)
+![Payment](Payment.png)
 
 ---
 
