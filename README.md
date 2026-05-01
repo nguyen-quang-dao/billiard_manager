@@ -1,23 +1,37 @@
 # 🎱 Billiard Management System
 
+A desktop application for managing a billiard club, built with **C# WinForms** and **SQL Server** using a **3-layer architecture (GUI - BLL - DAL)**.
+
+---
+
 ## 🚀 Features
-- Quản lý bàn bida (CRUD)
-- Tính tiền theo thời gian thực
-- Thanh toán tự động
-- Phân quyền (Admin / User)
-- Audit log theo dõi thao tác
-- UI WinForms dark mode
+
+- Table management (CRUD)
+- Real-time billing calculation
+- Payment processing
+- Role-based access control (Admin / User)
+- Audit logging (track user actions)
+- Dark mode UI (WinForms)
+
+---
 
 ## 🛠 Tech Stack
-- C# WinForms
-- SQL Server
-- 3-layer architecture (GUI - BLL - DAL)
+
+- **Language:** C#  
+- **Framework:** .NET (WinForms)  
+- **Database:** SQL Server  
+- **Architecture:** 3-layer (GUI - BLL - DAL)  
+- **Tools:** Visual Studio, Git  
+
+---
 
 ## 👤 Roles
-- Admin: quản lý bàn, sửa giá
-- User: sử dụng, thanh toán
 
-## 📸 Screenshots
+- **Admin:** manage tables, update prices  
+- **User:** use tables, make payments  
+
+---
+
 ## 📸 Screenshots
 
 ![Login](<img width="871" height="582" alt="Login" src="https://github.com/user-attachments/assets/69772181-2713-429e-8d7e-c2d2478887a8" />
@@ -28,6 +42,8 @@
 )
 ![Payment](<img width="372" height="305" alt="Payment" src="https://github.com/user-attachments/assets/829d067c-9170-4128-ac11-ccf789808a80" />
 )
+
+---
 
 ## 📌 How to run
 - Clone repo
